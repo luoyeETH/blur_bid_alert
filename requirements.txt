@@ -1,0 +1,2 @@
+DingtalkChatbot==1.5.7
+selenium==4.3.0
