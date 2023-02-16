@@ -156,6 +156,7 @@ if __name__ == '__main__':
             else:
                 print(f"{contractAddress} 三档开外 安全")
             time.sleep(1)
+        driver.refresh()
         time.sleep(60)
 
     print("done")
