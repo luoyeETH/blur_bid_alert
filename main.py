@@ -102,32 +102,33 @@ if __name__ == '__main__':
 
     # connectBlur()
     # sign()
-    # 获取bid数据
-    data = getBids()
-    # 将JSON字符串解析为Python字典
-    data_dict = json.loads(data)
-
-    # 获取priceLevels列表
-    price_levels = data_dict.get('priceLevels')
-
-    # 只保留priceLevels中的executableSize大于0的数据
-    result = []
-    for level in price_levels:
-        if level.get('executableSize', 0) > 0:
-            result.append({'contractAddress': level['contractAddress'], 'price': level['price']})
-
-    # 打印结果
-    print(result)
-
-    # 获取url列表
-    url_list = []
-    url2_list = []
-    for i in result:
-        url = 'https://blur.io/collection/' + i['contractAddress'] + '/bids'
-        url2 = 'https://core-api.prod.blur.io/v1/collections/' + i['contractAddress'] + '/executable-bids'
-        url_list.append(url)
-        url2_list.append(url2)
     while True:
+        # 获取bid数据
+        data = getBids()
+        # 将JSON字符串解析为Python字典
+        data_dict = json.loads(data)
+
+        # 获取priceLevels列表
+        price_levels = data_dict.get('priceLevels')
+
+        # 只保留priceLevels中的executableSize大于0的数据
+        result = []
+        for level in price_levels:
+            if level.get('executableSize', 0) > 0:
+                result.append({'contractAddress': level['contractAddress'], 'price': level['price']})
+
+        # 打印结果
+        print(result)
+
+        # 获取url列表
+        url_list = []
+        url2_list = []
+        for i in result:
+            url = 'https://blur.io/collection/' + i['contractAddress'] + '/bids'
+            url2 = 'https://core-api.prod.blur.io/v1/collections/' + i['contractAddress'] + '/executable-bids'
+            url_list.append(url)
+            url2_list.append(url2)
+    
         for i in range(0, len(url_list)):
             price = result[i]['price']
             contractAddress = result[i]['contractAddress']
