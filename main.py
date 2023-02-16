@@ -122,17 +122,14 @@ if __name__ == '__main__':
 
         # 获取url列表
         url_list = []
-        url2_list = []
         for i in result:
-            url = 'https://blur.io/collection/' + i['contractAddress'] + '/bids'
-            url2 = 'https://core-api.prod.blur.io/v1/collections/' + i['contractAddress'] + '/executable-bids'
+            url = 'https://core-api.prod.blur.io/v1/collections/' + i['contractAddress'] + '/executable-bids'
             url_list.append(url)
-            url2_list.append(url2)
     
         for i in range(0, len(url_list)):
             price = result[i]['price']
             contractAddress = result[i]['contractAddress']
-            bidpool_data = getRealtimeBidPool(url_list[i], url2_list[i])
+            bidpool_data = getRealtimeBidPool(url_list[i])
             # 将JSON字符串解析为Python字典
             data_dict = json.loads(bidpool_data)
             # 获取bidpool列表
