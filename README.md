@@ -1,13 +1,17 @@
 # blur_bid_alert
 Blur bid提醒 使用selenium实现
 
-## 环境准备  
-python3.7  
+## 使用教程  
+
+### Release版本  
+下载压缩包 并按教程配置  
+
+### 源码  
+python3.7
 下载浏览器对应版本的chromedriver  
 安装依赖  
 创建钉钉机器人  
 按照注释中的说明填写对应参数  
-
 ## 效果  
 ![log](log.png)  
 ![alert](alert.png)
