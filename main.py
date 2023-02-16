@@ -84,6 +84,23 @@ def getRealtimeBidPool(url):
     return json_data
 
 
+def getPoints():
+    driver.execute_script("window.open();")
+    driver.switch_to.window(driver.window_handles[1])
+    driver.get("https://core-api.prod.blur.io/v1/user/rewards/wallet-compact")
+    # 获取页面的json数据
+    json_data = driver.find_element(By.XPATH, '//pre').text
+    # 将JSON字符串解析为Python字典
+    data_dict = json.loads(json_data)
+
+    # 获取priceLevels列表
+    point_data = data_dict.get('wallet')
+    print(f'{time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())} 总积分: {point_data.get("bidTotalXp")}')
+    driver.close()
+    driver.switch_to.window(driver.window_handles[0])
+    time.sleep(1)
+
+
 if __name__ == '__main__':
     # 4.钉钉机器人配置 也可以换其他提醒 替换webhook和secret
     webhook = 'https://oapi.dingtalk.com/robot/send?access_token=aaaaaaaaaaaaaaaae53781405ce39c9a6e7e7ff7c5cb19c687bb754a'
@@ -137,23 +154,27 @@ if __name__ == '__main__':
             executableSize1 = bid_pool[0]['executableSize']
             executableSize2 = bid_pool[1]['executableSize']
             if bid_pool[0]['price'] == price:
-                msg = f"{contractAddress} 第一档 价格: {price} 第一档数量: {executableSize1} 第二档数量: {executableSize2}"
+                msg = f"{contractAddress} 第一档 价格: {price} 第一档数量: {executableSize1} 第二档数量: {executableSize2}\n 直达链接: " \
+                      f"https://blur.io/portfolio/bids?contractAddress={contractAddress} "
                 print(msg)
                 if contract_whitelist.count(contractAddress) == 0:
                     ding_bot.send_text(msg)
             elif bid_pool[1]['price'] == price:
-                msg = f"{contractAddress} 第二档 价格: {price} 第一档数量: {executableSize1} 第二档数量: {executableSize2}"
+                msg = f"{contractAddress} 第二档 价格: {price} 第一档数量: {executableSize1} 第二档数量: {executableSize2}\n 直达链接: " \
+                      f"https://blur.io/portfolio/bids?contractAddress={contractAddress} "
                 print(msg)
                 if executableSize1 < 10 and contract_whitelist.count(contractAddress) == 0:
                     ding_bot.send_text(msg)
             elif bid_pool[2]['price'] == price:
-                msg = f"{contractAddress} 第三档 价格: {price} 第一档数量: {executableSize1} 第二档数量: {executableSize2}"
+                msg = f"{contractAddress} 第三档 价格: {price} 第一档数量: {executableSize1} 第二档数量: {executableSize2}\n 直达链接: " \
+                      f"https://blur.io/portfolio/bids?contractAddress={contractAddress} "
                 print(msg)
                 if executableSize1 < 10 and executableSize2 < 10 and contract_whitelist.count(contractAddress) == 0:
                     ding_bot.send_text(msg)
             else:
                 print(f"{contractAddress} 三档开外 安全")
             time.sleep(1)
+        getPoints()
         driver.refresh()
         time.sleep(60)
 
