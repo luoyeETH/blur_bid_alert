@@ -8,6 +8,9 @@ python3.7
 创建钉钉机器人  
 按照注释中的说明填写对应参数  
 
+## 效果  
+![log](log.png)  
+![alert](alert.png)
 >详细教程后面更新  
 >临时写的 有bug正常  
 >有问题欢迎issue反馈  
