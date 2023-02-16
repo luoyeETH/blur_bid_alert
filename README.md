@@ -7,10 +7,10 @@ Blur bid提醒 使用selenium实现
 下载压缩包 并按教程配置  
 
 ### 源码  
-python3.7
+python3.10
 下载浏览器对应版本的chromedriver  
 安装依赖  
-创建钉钉机器人  
+创建钉钉机器人/tg机器人  
 按照注释中的说明填写对应参数  
 
 ## FAQ 持续更新  
@@ -30,6 +30,11 @@ python3.7
 完整复制这个路径到一个新的路径 比如D:\ChromeSelenium  
 最后将这个路径填入config.ini的path中  
 以上过程比较方便，也可以自己创一个新的空浏览器再添加matamask导入助记词 
+
+* 4.telegram机器人创建  
+[BotFather](https://t.me/BotFather)-`/newBot`  
+[MCT-Bot](https://t.me/MCT_CLUB_BOT)-`/getchatid` 获取用户id  
+机器人创建好后先发一个`/start`激活
 
 ## 效果  
 ![log](log.png)  
