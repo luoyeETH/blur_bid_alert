@@ -34,7 +34,10 @@ python3.10
 * 4.telegram机器人创建  
 [BotFather](https://t.me/BotFather)-`/newBot`  
 [MCT-Bot](https://t.me/MCT_CLUB_BOT)-`/getchatid` 获取用户id  
-机器人创建好后先发一个`/start`激活
+机器人创建好后先发一个`/start`激活  
+
+* 5.为什么执行成功可以看到积分但是bid列表为空?  
+config.ini 文件中address的地址应为全小写地址  
 
 ## 效果  
 ![log](log.png)  
