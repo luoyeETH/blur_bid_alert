@@ -148,20 +148,20 @@ try:
                           f"https://blur.io/portfolio/bids?contractAddress={contractAddress} "
                     print("\033[31m" + msg + "\033[0m")
                     if contract_whitelist.count(contractAddress) == 0:
-                        tg_bot.send_text(msg)
+                        tg_bot(msg)
                 elif bid_pool[1]['price'] == price:
                     msg = f"{contractAddress} 第二档 价格: {price} 第一档数量: {executableSize1} 第二档数量: {executableSize2}\n直达链接: " \
                           f"https://blur.io/portfolio/bids?contractAddress={contractAddress} "
                     print(msg)
                     if executableSize1 < limit1 and contract_whitelist.count(contractAddress) == 0:
-                        tg_bot.send_text(msg)
+                        tg_bot(msg)
                 elif bid_pool[2]['price'] == price:
                     msg = f"{contractAddress} 第三档 价格: {price} 第一档数量: {executableSize1} 第二档数量: {executableSize2}\n直达链接: " \
                           f"https://blur.io/portfolio/bids?contractAddress={contractAddress} "
                     print(msg)
                     if executableSize1 < limit1 and executableSize2 < limit2 and contract_whitelist.count(
                             contractAddress) == 0:
-                        tg_bot.send_text(msg)
+                        tg_bot(msg)
                 else:
                     print(f"{contractAddress} 三档开外 安全")
                 time.sleep(1)
