@@ -1,6 +1,7 @@
 # blur_bid_alert
 Blur bid提醒 使用selenium实现
 
+> 亏麻了，早知道不写了，大家用这个项目吧 https://twitter.com/moneystorylabs
 ## 使用教程  
 
 ### Release版本  
