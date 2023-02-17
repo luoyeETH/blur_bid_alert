@@ -1,6 +1,8 @@
 import json
 from selenium import webdriver
 import time
+
+from selenium.common import NoSuchWindowException
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from dingtalkchatbot.chatbot import DingtalkChatbot
@@ -20,7 +22,9 @@ try:
     config = configparser.ConfigParser()
 
     # 读取配置文件
-    config.read('config.ini')
+    config = configparser.ConfigParser()
+    with open('config.ini', 'r', encoding='utf-8') as f:
+        config.read_file(f)
 
     # 获取配置信息
     path = config.get('config', 'path')
@@ -28,6 +32,7 @@ try:
     address = config.get('config', 'address')
     limit1 = int(config.get('config', 'limit1'))
     limit2 = int(config.get('config', 'limit2'))
+    cd = int(config.get('config', 'cd'))
     webhook = config.get('config', 'webhook')
     secret = config.get('config', 'secret')
     whitelist_str = config.get('config', 'whitelist')
@@ -102,9 +107,13 @@ try:
         driver.get('https://blur.io/portfolio/bids')
         conncetMetaMask()
         # 关闭其他窗口
-        driver.switch_to.window(driver.window_handles[1])
-        driver.close()
-        driver.switch_to.window(driver.window_handles[0])
+        try:
+            driver.switch_to.window(driver.window_handles[1])
+            driver.close()
+            driver.switch_to.window(driver.window_handles[0])
+        except NoSuchWindowException:
+            # 如果窗口不存在，则不执行任何操作
+            pass
 
         while True:
             # 获取bid数据
@@ -134,8 +143,13 @@ try:
                 data_dict = json.loads(bidpool_data)
                 # 获取bidpool列表
                 bid_pool = data_dict.get('priceLevels')
-                executableSize1 = bid_pool[0]['executableSize']
-                executableSize2 = bid_pool[1]['executableSize']
+                num_levels = len(bid_pool)
+                if num_levels == 1:
+                    executableSize1 = bid_pool[0]['executableSize']
+                    executableSize2 = 9999
+                else:
+                    executableSize1 = bid_pool[0]['executableSize']
+                    executableSize2 = bid_pool[1]['executableSize']
                 if bid_pool[0]['price'] == price:
                     msg = f"{contractAddress} 第一档 价格: {price} 第一档数量: {executableSize1} 第二档数量: {executableSize2}\n直达链接: " \
                           f"https://blur.io/portfolio/bids?contractAddress={contractAddress} "
@@ -160,8 +174,8 @@ try:
                 time.sleep(1)
             getPoints()
             driver.refresh()
-            print("60秒后开始新一轮检查")
-            time.sleep(60)
+            print(f"{cd}秒后开始新一轮检查")
+            time.sleep(cd)
 
         print("done")
         driver.quit()
