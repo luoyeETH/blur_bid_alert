@@ -7,9 +7,9 @@ Blur bid提醒 使用selenium实现
 下载压缩包 并按教程配置  
 
 ### 源码  
-python3.10
+python3.10  
 下载浏览器对应版本的chromedriver  
-安装依赖  
+安装依赖`pip install -r requirements.txt`  
 创建钉钉机器人/tg机器人  
 按照注释中的说明填写对应参数  
 
