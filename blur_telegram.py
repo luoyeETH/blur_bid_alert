@@ -134,9 +134,10 @@ try:
         conncetMetaMask()
         # 关闭其他窗口
         try:
-            driver.switch_to.window(driver.window_handles[1])
-            driver.close()
-            driver.switch_to.window(driver.window_handles[0])
+            if len(driver.window_handles) > 1:
+                driver.switch_to.window(driver.window_handles[1])
+                driver.close()
+                driver.switch_to.window(driver.window_handles[0])
         except NoSuchWindowException:
             # 如果窗口不存在，则不执行任何操作
             pass
