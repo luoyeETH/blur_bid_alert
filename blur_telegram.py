@@ -30,9 +30,11 @@ try:
     path = config.get('config', 'path')
     password = config.get('config', 'password')
     address = config.get('config', 'address')
+    limit0 = int(config.get('config', 'limit0'))
     limit1 = int(config.get('config', 'limit1'))
     limit2 = int(config.get('config', 'limit2'))
     cd = int(config.get('config', 'cd'))
+    cancel = config.get('config', 'cancel')
     telegram_bot_token = config.get('config', 'telegram_bot_token')
     telegram_id = config.get('config', 'telegram_id')
     whitelist_str = config.get('config', 'whitelist')
@@ -44,6 +46,8 @@ try:
         option = webdriver.ChromeOptions()
         s = Service("chromedriver.exe")
         option.add_argument("--user-data-dir=" + path)
+        # option.add_argument('--headless')
+
         driver = webdriver.Chrome(options=option, service=s)  # 此时将webdriver.exe 保存到python Script目录下
 
         return driver
@@ -105,8 +109,24 @@ try:
         requests.get(url)  # this sends the message
 
 
+    def cancel_bid(contract):
+        if cancel == "on":
+            driver.maximize_window()
+            driver.execute_script("window.open();")
+            driver.switch_to.window(driver.window_handles[1])
+            driver.get(f"https://blur.io/portfolio/bids?contractAddress={contractAddress}")
+            driver.find_element(By.XPATH, '//button[@title="cancel bid"]').click()
+            tg_bot(f"{contract} 已取消现有bid,请重新bid")
+            time.sleep(0.5)
+            driver.close()
+            driver.switch_to.window(driver.window_handles[0])
+            driver.minimize_window()
+            time.sleep(0.5)
+
+
     if __name__ == '__main__':
-        tg_bot("连通性检查")
+        tg_bot(f"[连通性检查]\n查询冷却时间 {cd}s\n推送时自动撤单 {cancel=='on'}\n[预警逻辑]\n当bid位于第一档时且第一档剩余bid总数低于{limit0}\n当bid"
+               f"位于第二档时且第一档剩余bid总数低于{limit1}\n当bid位于第三档时且第一档与第二档剩余bid总数低于{limit2}")
         contract_whitelist = whitelist
         driver = launchSeleniumWebdriver()
         driver.implicitly_wait(5)
@@ -120,7 +140,7 @@ try:
         except NoSuchWindowException:
             # 如果窗口不存在，则不执行任何操作
             pass
-
+        driver.minimize_window()
         while True:
             # 获取bid数据
             data = getBids()
@@ -156,12 +176,14 @@ try:
                 else:
                     executableSize1 = bid_pool[0]['executableSize']
                     executableSize2 = bid_pool[1]['executableSize']
+
                 if bid_pool[0]['price'] == price:
                     msg = f"{contractAddress} 第一档 价格: {price} 第一档数量: {executableSize1} 第二档数量: {executableSize2}\n直达链接: " \
-                          f"https://blur.io/portfolio/bids?contractAddress={contractAddress} "
+                          f"https://blur.io/portfolio/bids?contractAddress={contractAddress}"
                     print("\033[31m" + msg + "\033[0m")
-                    if contract_whitelist.count(contractAddress) == 0:
+                    if executableSize1 < limit0 and contract_whitelist.count(contractAddress) == 0:
                         tg_bot(msg)
+                        cancel_bid(contractAddress)
                     else:
                         print("合约地址在白名单中，不推送消息")
                 elif bid_pool[1]['price'] == price:
@@ -170,13 +192,15 @@ try:
                     print(msg)
                     if executableSize1 < limit1 and contract_whitelist.count(contractAddress) == 0:
                         tg_bot(msg)
+                        cancel_bid(contractAddress)
                 elif bid_pool[2]['price'] == price:
                     msg = f"{contractAddress} 第三档 价格: {price} 第一档数量: {executableSize1} 第二档数量: {executableSize2}\n直达链接: " \
                           f"https://blur.io/portfolio/bids?contractAddress={contractAddress} "
                     print(msg)
-                    if executableSize1 < limit1 and executableSize2 < limit2 and contract_whitelist.count(
+                    if (executableSize1 + executableSize2) < limit2 and contract_whitelist.count(
                             contractAddress) == 0:
                         tg_bot(msg)
+                        cancel_bid(contractAddress)
                 elif bid_pool[3]['price'] == price:
                     msg = f"{contractAddress} 第四档 价格: {price} 第一档数量: {executableSize1} 第二档数量: {executableSize2}\n直达链接: " \
                           f"https://blur.io/portfolio/bids?contractAddress={contractAddress} "
