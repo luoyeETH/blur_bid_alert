@@ -1,2 +1,4 @@
 DingtalkChatbot==1.5.7
 selenium==4.3.0
+requests~=2.27.1
+web3~=5.31.3
