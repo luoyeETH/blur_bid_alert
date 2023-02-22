@@ -1,7 +1,7 @@
 # blur_bid_alert
 Blur bid提醒/自动撤单 使用selenium实现
 
-> 亏麻了，早知道不写了，大家用这个项目吧 https://twitter.com/moneystorylabs
+> Blur里面割韭菜的太多，目前我自己刷分亏麻，这个项目不准备维护了，最新版本已经全部开源  
 ## 使用教程  
 
 ### Release版本  
